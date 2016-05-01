@@ -48,13 +48,13 @@ class CreateData():
 
         #Create a json file of the prices
         timestamp = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-        with open("prices-%s.json" % timestamp, "w") as fp:
+        with open("/tmp/prices-%s.json" % timestamp, "w") as fp:
             json.dump(price_list, fp, sort_keys=True, indent=4)
 
         #Compare this price list to the most "recent" price list
         recent_price_list = {}
 
-        with open('prices-recent.json', 'r') as fp:
+        with open('/tmp/prices-recent.json', 'r') as fp:
             recent_price_list = json.load(fp)
 
         #This will be the output data of comparing the old data and new data
@@ -82,7 +82,7 @@ class CreateData():
                 new_difference = new_price[0] - old_price[0]
             except(KeyError):
                 #take care of the case that old_product doesn't appear on price_list
-                new_price = 0.0
+                new_price = [0.0]
                 is_discontinued_product = True
 
             if new_difference != 0.0:
@@ -112,15 +112,20 @@ class CreateData():
                                               "product_url": price_list[each_product][1]
                                         }
 
-        #Create a file to be the most recent comparison data
-        timestamp = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-        with open("price-comparison-%s.json" % timestamp, "w") as fp:
-            json.dump(comparison_data, fp, sort_keys=True, indent=4)
-
         #makes it easy to find the always most recent data
-        with open("price-comparison-recent.json", "w") as fp:
+        with open("/tmp/price-comparison-recent.json", "w") as fp:
             json.dump(comparison_data, fp, sort_keys=True, indent=4)
 
         #update the recent prices
-        with open("prices-recent.json", "w") as fp:
+        with open("/tmp/prices-recent.json", "w") as fp:
             json.dump(price_list, fp, sort_keys=True, indent=4)
+
+        #Create a file to be the most recent comparison data
+        timestamp = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+        if "True" in comparison_data:
+            filename = "/tmp/price-comparison-%s.json"
+            with open(filename, "w") as fp:
+                json.dump(comparison_data, fp, sort_keys=True, indent=4)
+                return filename
+
+        return None

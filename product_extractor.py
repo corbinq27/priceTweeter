@@ -16,7 +16,7 @@ class ProductExtractor():
                                      ' size="2"><a CLASS="anylink" href="([^\"]+)">([^<]+)</a></font></td>'
 
         list_of_urls = {}
-        with open("hills_urls.json", "rb") as urls:
+        with open("/tmp/hills_urls.json", "rb") as urls:
             list_of_urls = json.loads(urls.read())
 
         dict_of_pages_to_check = {"urls": []}
@@ -30,5 +30,5 @@ class ProductExtractor():
                 print url
                 dict_of_pages_to_check["urls"].append(url)
 
-        with open("pages_to_check.json", "w") as fp:
+        with open("/tmp/pages_to_check.json", "w") as fp:
             json.dump(dict_of_pages_to_check, fp, sort_keys=True, indent=4)

@@ -38,8 +38,13 @@ class CreateData():
             #let's sanitize the price to a float and make this a dictionary entry
             dollar_string = scraped_data[0]["price"][0].replace("&nbsp;","")
             removed_dollar_sign = dollar_string.replace("$", "")
-            price_as_float = float(removed_dollar_sign)
-
+            try:
+                price_as_float = float(removed_dollar_sign)
+            except ValueError:
+                #If the value gotten isn't convertable to a float, then it
+                #most likely is "Product Unavailable" and we need to deal
+                #with this case later down.  N/A will be our tell for that.
+                price_as_float = "N/A"
             #get the product name by itself.
             product_name = scraped_data[0]["product"][0]
 
@@ -80,11 +85,13 @@ class CreateData():
             try:
                 new_price = price_list[old_product]
                 new_difference = new_price[0] - old_price[0]
-            except(KeyError):
+            except(KeyError, TypeError):
                 #take care of the case that old_product doesn't appear on price_list
+                #This also takes care of the case the the old_price isn't a float because
+                #the old price is marked as N/A
                 new_price = [0.0]
                 is_discontinued_product = True
-
+                
             if new_difference != 0.0:
                 is_difference = True
 

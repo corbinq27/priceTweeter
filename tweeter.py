@@ -67,5 +67,10 @@ def lambda_handler(event, context):
                                                                                      int(info["old_price"]), short_url))
             else:
                 print "no change for %s" % product
-                print 'test printout for %s: $%s. Was $%s. %s' % (product, int(info["new_price"]),
+                try:
+                    print 'test printout for %s: $%s. Was $%s. %s' % (product, int(info["new_price"]),
                                                                                      int(info["old_price"]), short_url)
+                except(ValueError):
+                    #deal with the N/A price.
+                    print "test printout for %s: %s. Was %s. %s" % (product, info["new_price"],
+                                                                                     info["old_price"], short_url)

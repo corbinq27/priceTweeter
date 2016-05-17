@@ -95,18 +95,6 @@ class CreateData():
             if new_difference != 0.0:
                 is_difference = True
 
-            #if a product is left on the site without a price, we need to not
-            #tweet that out constantly.  Therefore, check the most recent
-            #price-comparison-recent.json list.  if this product is on Therefore
-            #and was previously discontinued, then set is_discontinued_product
-            #to False. Hooray for hacks.
-
-            with open("/tmp/price-comparison-recent.json", "r") as fp:
-                price_comparison_recent = json.load(fp)
-                if price_comparison_recent[old_product]["is_discontinued_product"] == True:
-                    is_discontinued_product = False
-
-
             comparison_data[old_product] = {
                                             "old_price": old_price[0],
                                             "new_price": new_price[0],

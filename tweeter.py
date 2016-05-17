@@ -58,7 +58,10 @@ def lambda_handler(event, context):
                 if not short_url_obtained:
                     short_url = "http://goo.gl/p7KqbO" #hardcoded to wholesalegaming.biz
 
-            if info["is_discontinued_product"]:
+            if info["is_discontinued_product"] and (info["old_price"] not in "N/A"):
+                #only tweet out if the old_price of a product is N/A.
+                #deals with issue of the discontinued product not getting removed
+                #from scraped site.
                 twitter.update_status(status="%s no longer for sale. %s" % (product, short_url))
             elif info["is_new_product"]:
                 twitter.update_status(status="%s now available! $%s. %s" % (product, int(info["new_price"]), short_url))
@@ -66,11 +69,11 @@ def lambda_handler(event, context):
                 twitter.update_status(status='New price for %s: $%s. Was $%s. %s' % (product, int(info["new_price"]),
                                                                                      int(info["old_price"]), short_url))
             else:
-                print "no change for %s" % product
+                print("no change for %s" % product)
                 try:
-                    print 'test printout for %s: $%s. Was $%s. %s' % (product, int(info["new_price"]),
-                                                                                     int(info["old_price"]), short_url)
+                    print('test printout for %s: $%s. Was $%s. %s' % (product, int(info["new_price"]),
+                                                                                     int(info["old_price"]), short_url))
                 except(ValueError):
                     #deal with the N/A price.
-                    print "test printout for %s: %s. Was %s. %s" % (product, info["new_price"],
-                                                                                     info["old_price"], short_url)
+                    print("test printout for %s: %s. Was %s. %s" % (product, info["new_price"],
+                                                                                     info["old_price"], short_url))
